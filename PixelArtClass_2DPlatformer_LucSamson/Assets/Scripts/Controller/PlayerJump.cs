@@ -15,6 +15,7 @@ public class PlayerJump : MonoBehaviour
     [Header("Components")]
     [SerializeField] private PlayerState playerInfo;
     private Rigidbody2D body;
+    public Animator animator;
 
     [Header("Current State")]
     public JumpState currentState;
@@ -40,13 +41,14 @@ public class PlayerJump : MonoBehaviour
             switch (value)
             {
                 case JumpState.Grounded:
-
+                    animator.SetBool("isJumping", false);
+                    animator.SetBool("isFalling", false);
                     break;
                 case JumpState.Jumping:
-
+                    animator.SetBool("isJumping", true);
                     break;
                 case JumpState.Falling:
-
+                    animator.SetBool("isFalling", true);
                     break;
             }
 
@@ -94,6 +96,11 @@ public class PlayerJump : MonoBehaviour
         // GetComponent() permet de rechercher sur son objet s'il y a un composant Rigidbody2D
         body = GetComponent<Rigidbody2D>();
         body.gravityScale = groundGravityMultiplier;
+    }
+    private void Update()
+    {   // Animation de saut
+        animator.SetFloat("VelocityY", body.linearVelocityY);
+        animator.SetBool("isGrounded", playerInfo.IsGrounded);
     }
     private void FixedUpdate()
     {
@@ -149,6 +156,8 @@ public class PlayerJump : MonoBehaviour
         // InitialVelocity = GravityScale * TimeToReachApex
         initialJumpForce = GetGravityConstant() * timeToReachApex;
         body.linearVelocityY = initialJumpForce;
+
+        animator.SetTrigger("jump"); // Animation du saut
 
         onJump?.Invoke();
     }

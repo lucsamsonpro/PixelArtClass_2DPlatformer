@@ -1,5 +1,5 @@
-using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // Définition une liste d'état possible (marche, course, ou dans les airs)
 public enum MovementState
@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Input Sprint")]
     [SerializeField] private bool isToggleSprint;
     [SerializeField] private bool wantToSprint;
-
+    public Animator animator;
     private void Awake()
     {
         // Recherche du Rigidbody2D sur l'objet (sert à appliquer la physique : vitesse, gravité...)
@@ -66,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
 
         horizontalInput = context.ReadValue<Vector2>().x;
         isMoving = horizontalInput != 0;
+        animator.SetBool("isMoving", isMoving); // Animation de run
     }
     public void OnSprint(InputAction.CallbackContext context)
     {
